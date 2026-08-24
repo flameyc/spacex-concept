@@ -17,6 +17,8 @@ VIEWPORTS = {
     "desktop": {"width": 1440, "height": 900},
     "mobile": {"width": 390, "height": 844},
 }
+if os.environ.get("VERIFY_DESKTOP_ONLY") == "1":
+    VIEWPORTS = {"desktop": VIEWPORTS["desktop"]}
 
 BASE_URL = os.environ.get("VERIFY_BASE_URL", "").rstrip("/")
 if not BASE_URL:

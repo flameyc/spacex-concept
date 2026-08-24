@@ -7,6 +7,7 @@
   const sceneName = document.querySelector('[data-scene-name]');
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   const sceneVideos = [...document.querySelectorAll('[data-scene-video]')];
+  const sceneImages = [...document.querySelectorAll('[data-scene] .scene__media img[loading="lazy"]')];
   let pathLength = 0;
   let ticking = false;
   let activeScene = scenes[0] || null;
@@ -152,6 +153,18 @@
   });
 
   if ('IntersectionObserver' in window) {
+    // 提前约一幕请求下一张大图，避免桌面端快速滚动时出现短暂空档。
+    const imagePrefetchObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const image = entry.target;
+        image.loading = 'eager';
+        image.decode?.().catch(() => {});
+        observer.unobserve(image);
+      });
+    }, { rootMargin: '120% 0px', threshold: 0 });
+    sceneImages.forEach((image) => imagePrefetchObserver.observe(image));
+
     const videoObserver = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         const video = entry.target;
@@ -161,6 +174,7 @@
     }, { threshold: [0, .18, .5] });
     sceneVideos.forEach((video) => videoObserver.observe(video));
   } else {
+    sceneImages.forEach((image) => { image.loading = 'eager'; });
     sceneVideos.forEach((video) => { video.dataset.videoInView = 'true'; });
     syncAllSceneVideos();
   }

@@ -588,6 +588,14 @@
 .action-links a:focus-visible b { color: var(--flame); }
 
 .home-footer { position: relative; z-index: 2; }
+.scene .home-footer h2 {
+  max-width: none;
+  margin: 0 0 1rem;
+  font: .65rem/1.4 var(--mono);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
 .home-footer .site-footer__brand strong { color: var(--white); font-size: .82rem; letter-spacing: .05em; }
 .home-footer nav p { margin: 0; font-size: .68rem; line-height: 1.55; }
 

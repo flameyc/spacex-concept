@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.vite/
+*.log
+code.zip
+.morphe.json
+verification/*.png
+__pycache__/
+*.pyc

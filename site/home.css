@@ -298,19 +298,6 @@
 
 @keyframes cue { from { transform: scaleY(.55); } to { transform: scaleY(1); } }
 
-.trajectory {
-  position: fixed;
-  z-index: 7;
-  inset: 0;
-  pointer-events: none;
-  opacity: .72;
-}
-
-.trajectory svg { width: 100%; height: 100%; overflow: visible; }
-.trajectory path { fill: none; vector-effect: non-scaling-stroke; }
-.trajectory__ghost { stroke: rgba(240,240,250,.12); stroke-width: 1; stroke-dasharray: 3 8; }
-.trajectory__progress { stroke: var(--flame); stroke-width: 1.6; stroke-linecap: round; filter: drop-shadow(0 0 3px rgba(243,107,33,.38)); }
-
 .chapter-rail {
   position: fixed;
   z-index: 20;
@@ -895,7 +882,6 @@
   .scene__brief { max-width: 37rem; }
   .fact-line { width: min(100%, 38rem); }
   .chapter-rail { display: none; }
-  .trajectory { opacity: .48; }
   .scene__arc { left: 42%; top: 10%; width: 60vw; height: 60vw; }
   .orbit-map { top: 13%; right: -10%; width: 75vw; }
   .compute-line { left: 9%; right: 9%; top: 35%; }
@@ -921,7 +907,6 @@
   .scene__link { margin-top: 1.15rem; }
   .image-credit { right: var(--pad); bottom: .65rem; max-width: calc(100% - 2 * var(--pad)); font-size: .48rem; text-align: right; }
   .scroll-cue { display: none; }
-  .trajectory svg { transform: scaleX(.72); transform-origin: right; }
   .scene--hero .scene__media :is(img, video) { object-position: 44% center; }
   .scene--starship .scene__media :is(img, video) { object-position: 61% center; }
   .scene--falcon .scene__media :is(img, video) { object-position: 55% center; }
@@ -961,7 +946,6 @@
   .scene { --scene-copy-opacity: 1 !important; --scene-copy-y: 0px !important; --scene-copy-scale: 1 !important; --scene-curtain: 0 !important; }
   .scene__media :is(img, video) { transform: none !important; filter: none !important; will-change: auto; }
   .scroll-cue i { animation: none; }
-  .trajectory__progress { stroke-dasharray: none !important; stroke-dashoffset: 0 !important; }
   .js .scene__copy,
   .js .scene__brief,
   .js .fact-line,
@@ -973,7 +957,6 @@
 }
 
 @media (forced-colors: active) {
-  .trajectory { display: none; }
   .scene__shade { background: transparent; }
   .scene__media { opacity: .25; }
 }

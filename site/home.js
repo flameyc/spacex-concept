@@ -1,14 +1,12 @@
 (() => {
   const scenes = [...document.querySelectorAll('[data-scene]')];
   const railLinks = [...document.querySelectorAll('[data-rail-link]')];
-  const trajectoryPath = document.querySelector('[data-trajectory-path]');
   const header = document.querySelector('[data-site-header]');
   const sceneNumber = document.querySelector('[data-scene-number]');
   const sceneName = document.querySelector('[data-scene-name]');
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   const sceneVideos = [...document.querySelectorAll('[data-scene-video]')];
   const sceneImages = [...document.querySelectorAll('[data-scene] .scene__media img[loading="lazy"]')];
-  let pathLength = 0;
   let ticking = false;
   let activeScene = scenes[0] || null;
 
@@ -16,12 +14,6 @@
   const smoothstep = (edge0, edge1, value) => {
     const t = clamp01((value - edge0) / Math.max(.0001, edge1 - edge0));
     return t * t * (3 - 2 * t);
-  };
-
-  const setPathLength = () => {
-    if (!trajectoryPath) return;
-    pathLength = trajectoryPath.getTotalLength();
-    trajectoryPath.style.strokeDasharray = `${pathLength}`;
   };
 
   const setActiveScene = (scene) => {
@@ -43,11 +35,6 @@
   const update = () => {
     ticking = false;
     const viewportHeight = Math.max(1, window.innerHeight);
-    const scrollable = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
-    const progress = Math.min(1, Math.max(0, window.scrollY / scrollable));
-    if (trajectoryPath && !reducedMotion.matches) {
-      trajectoryPath.style.strokeDashoffset = `${pathLength * (1 - progress)}`;
-    }
     let closest = activeScene;
     let closestDistance = Number.POSITIVE_INFINITY;
     const viewportCenter = viewportHeight * .5;
@@ -190,15 +177,13 @@
   }
 
   reducedMotion.addEventListener?.('change', () => {
-    if (reducedMotion.matches && trajectoryPath) trajectoryPath.style.strokeDashoffset = '0';
     syncAllSceneVideos();
     requestUpdate();
   });
   document.addEventListener('visibilitychange', syncAllSceneVideos);
   window.addEventListener('scroll', requestUpdate, { passive: true });
-  window.addEventListener('resize', () => { setPathLength(); requestUpdate(); }, { passive: true });
+  window.addEventListener('resize', requestUpdate, { passive: true });
   window.addEventListener('load', requestUpdate, { once: true });
-  setPathLength();
   setActiveScene(scenes[0]);
   requestUpdate();
 

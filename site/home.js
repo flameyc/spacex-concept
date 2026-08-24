@@ -355,7 +355,7 @@
     }, 160);
   });
 
-  // 原创生成式 BGM：无外部音频、无采样；电影原声仅提供官方试听链接。
+  // 默认 BGM 由项目所有者提供；保留原创 Web Audio 作为解码失败时的回退。
   const audioToggle = document.querySelector('[data-audio-toggle]');
   const audioLabel = document.querySelector('[data-audio-label]');
   const audioSettings = document.querySelector('[data-audio-settings]');
@@ -365,6 +365,7 @@
   const volumeOutput = document.querySelector('[data-audio-volume-output]');
   const audioFileInput = document.querySelector('[data-audio-file]');
   const audioFileName = document.querySelector('[data-audio-file-name]');
+  const embeddedAudio = document.querySelector('[data-bgm-source]');
   const AudioContextClass = window.AudioContext || window.webkitAudioContext;
   const VOLUME_KEY = 'spacex-concept-bgm-volume';
   let audioContext = null;
@@ -372,14 +373,18 @@
   let chordTimer = 0;
   let chordIndex = 0;
   let isPlaying = false;
-  let mode = 'synth';
-  let localAudio = null;
+  let mode = embeddedAudio ? 'local' : 'synth';
+  let localAudio = embeddedAudio;
   let localObjectUrl = '';
 
   const storedVolume = Number.parseInt(localStorage.getItem(VOLUME_KEY) || '', 10);
   let volume = Number.isFinite(storedVolume) ? Math.min(100, Math.max(0, storedVolume)) : 32;
   if (volumeInput) volumeInput.value = String(volume);
   if (volumeOutput) volumeOutput.textContent = `${volume}%`;
+  if (localAudio) {
+    localAudio.volume = volume / 100;
+    localAudio.addEventListener('error', () => setAudioUi(false, '默认音频无法读取'));
+  }
 
   const setAudioUi = (playing, message) => {
     isPlaying = playing;
@@ -473,9 +478,14 @@
       localAudio.volume = volume / 100;
       try {
         await localAudio.play();
-        setAudioUi(true, '本地授权音频');
+        setAudioUi(true, localObjectUrl ? '本地授权音频' : 'Cornfield Chase');
       } catch {
-        setAudioUi(false, '请再次点击播放');
+        if (!localObjectUrl && localAudio === embeddedAudio) {
+          mode = 'synth';
+          await playSynth();
+        } else {
+          setAudioUi(false, '请再次点击播放');
+        }
       }
       return;
     }

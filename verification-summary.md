@@ -33,7 +33,7 @@
 - 进入动画改为渐进增强：JavaScript 失败或关闭时不隐藏正文；滚动看过的内容不再重复消失。
 - 第二轮将说明正文改为中文，Starship、Falcon 9、Dragon、Starlink、STARMIND 等英文识别标题保留。
 - 首页内部浏览入口改为原页工程抽屉；外部官方 Launches / Investors 继续使用新窗口。
-- 配乐参考曲确认为 `Cornfield Chase`；成品未复制电影原声，使用原创声景 + 本地授权音频载入。
+- 默认配乐已替换为项目所有者提供的 `Cornfield Chase`；保留点击后播放、循环、暂停、音量控制与临时本地音频覆盖。
 - Starship 与 STARMIND 两幕切换为官方动态视频；视频按钮中文化，并保留静态回退和减弱动态支持。
 
 ## 运行检查

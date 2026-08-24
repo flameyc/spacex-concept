@@ -1,0 +1,718 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="An unofficial SpaceX concept organized as a mission, engineering path, evidence, and action.">
+  <title>SpaceX Concept — Mission Architecture</title>
+  <style>
+    /*
+      DIRECTION 02 — REALITY BENCHMARK / THE OCEAN CLEANUP
+      Assumption: this is a visual direction prototype, not an official SpaceX page.
+      Structure translated from the benchmark: mission → problem → engineering path → evidence → action.
+      Visual language remains SpaceX-specific: black/white, steel, official photography and flame orange.
+    */
+    :root {
+      --black: #000;
+      --white: #f0f0fa;
+      --paper: #e9e9e5;
+      --ink: #111;
+      --muted: #a6a7ab;
+      --steel: #8e999f;
+      --flame: #f36b21;
+      --line-dark: rgba(240, 240, 250, .24);
+      --line-light: rgba(17, 17, 17, .2);
+      --display: "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+      --body: "Helvetica Neue", Arial, sans-serif;
+      --mono: "IBM Plex Mono", Consolas, monospace;
+      --pad: clamp(22px, 4vw, 64px);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; background: var(--black); }
+    body {
+      margin: 0;
+      min-width: 0;
+      overflow-x: clip;
+      background: var(--black);
+      color: var(--white);
+      font-family: var(--body);
+      font-size: 16px;
+      line-height: 1.45;
+      text-rendering: optimizeLegibility;
+    }
+    body.menu-open { overflow: hidden; }
+    a { color: inherit; text-decoration: none; }
+    button { color: inherit; font: inherit; }
+    img { display: block; width: 100%; }
+    h1, h2, h3, p { margin: 0; }
+    h1, h2, h3 { text-wrap: balance; }
+    p { text-wrap: pretty; }
+    :focus-visible { outline: 2px solid var(--flame); outline-offset: 4px; }
+
+    .skip-link {
+      position: fixed;
+      z-index: 100;
+      top: 12px;
+      left: 12px;
+      padding: 10px 14px;
+      transform: translateY(-160%);
+      background: var(--white);
+      color: var(--ink);
+      font: 700 12px/1 var(--mono);
+      letter-spacing: .08em;
+    }
+    .skip-link:focus { transform: translateY(0); }
+
+    .site-header {
+      position: absolute;
+      z-index: 30;
+      inset: 0 0 auto 0;
+      height: 92px;
+      display: grid;
+      grid-template-columns: 180px 1fr auto;
+      align-items: center;
+      gap: 28px;
+      padding: 0 var(--pad);
+      border-bottom: 1px solid rgba(240,240,250,.26);
+    }
+    .brand { display: inline-flex; width: 148px; }
+    .brand img { height: auto; }
+    .desktop-nav {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: clamp(15px, 1.7vw, 28px);
+      font: 700 10px/1 var(--body);
+      letter-spacing: .105em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .desktop-nav a { position: relative; padding: 12px 0; }
+    .desktop-nav a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 100%;
+      bottom: 3px;
+      height: 1px;
+      background: currentColor;
+      transition: right .25s ease;
+    }
+    .desktop-nav a:hover::after { right: 0; }
+    .header-meta {
+      color: rgba(240,240,250,.7);
+      font: 500 9px/1.3 var(--mono);
+      letter-spacing: .12em;
+      text-align: right;
+      text-transform: uppercase;
+    }
+    .menu-button {
+      display: none;
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      border: 1px solid rgba(240,240,250,.5);
+      background: transparent;
+      cursor: pointer;
+    }
+    .menu-button span,
+    .menu-button::before {
+      content: "";
+      display: block;
+      width: 18px;
+      height: 1px;
+      margin: 5px auto;
+      background: currentColor;
+      transition: transform .25s ease;
+    }
+
+    .mobile-menu {
+      position: fixed;
+      z-index: 25;
+      inset: 0;
+      display: none;
+      align-content: center;
+      padding: 112px var(--pad) 40px;
+      background: var(--black);
+    }
+    .mobile-menu[aria-hidden="false"] { display: grid; }
+    .mobile-menu a {
+      padding: 11px 0;
+      border-bottom: 1px solid var(--line-dark);
+      font: 700 clamp(28px, 8vw, 46px)/1 var(--display);
+      letter-spacing: -.035em;
+      text-transform: uppercase;
+    }
+
+    .chapter-rail {
+      position: fixed;
+      z-index: 20;
+      right: 22px;
+      top: 50%;
+      display: grid;
+      gap: 0;
+      width: 42px;
+      transform: translateY(-50%);
+      mix-blend-mode: difference;
+    }
+    .chapter-rail a {
+      position: relative;
+      height: 52px;
+      color: #fff;
+      font: 600 9px/1 var(--mono);
+      letter-spacing: .08em;
+    }
+    .chapter-rail a::before {
+      content: "";
+      position: absolute;
+      top: 19px;
+      right: 0;
+      width: 10px;
+      height: 1px;
+      background: currentColor;
+      transition: width .25s ease;
+    }
+    .chapter-rail a.active::before,
+    .chapter-rail a:hover::before { width: 28px; }
+
+    .hero {
+      position: relative;
+      min-height: 760px;
+      height: 100svh;
+      max-height: 1100px;
+      isolation: isolate;
+      overflow: hidden;
+      background: #080a0b;
+    }
+    .hero-media,
+    .hero-shade,
+    .hero-grain { position: absolute; inset: 0; }
+    .hero-media {
+      z-index: 0;
+      background: url("../assets/spacex-brand/hero-primary-starship.jpg") 50% 52% / cover no-repeat;
+      transform: scale(1.015);
+      animation: settle 1.5s cubic-bezier(.2,.7,.2,1) both;
+    }
+    .hero-shade {
+      z-index: 1;
+      background:
+        linear-gradient(90deg, rgba(0,0,0,.04) 0%, rgba(0,0,0,.03) 40%, rgba(0,0,0,.82) 92%),
+        linear-gradient(0deg, rgba(0,0,0,.92) 0%, transparent 43%),
+        linear-gradient(180deg, rgba(0,0,0,.46), transparent 26%);
+    }
+    .hero-grain {
+      z-index: 2;
+      opacity: .12;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.42'/%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+    @keyframes settle { from { opacity: 0; transform: scale(1.05); } to { opacity: 1; transform: scale(1.015); } }
+
+    .hero-content {
+      position: absolute;
+      z-index: 3;
+      inset: auto var(--pad) 45px var(--pad);
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(310px, .47fr);
+      align-items: end;
+      gap: clamp(40px, 7vw, 116px);
+    }
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      margin-bottom: 17px;
+      font: 700 11px/1 var(--mono);
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+    .eyebrow::before { content: ""; width: 34px; height: 2px; background: var(--flame); }
+    .hero h1 {
+      max-width: 880px;
+      font: 700 clamp(55px, 7.5vw, 116px)/.82 var(--display);
+      letter-spacing: -.067em;
+      text-transform: uppercase;
+    }
+    .hero-copy {
+      padding: 22px 0 9px;
+      border-top: 1px solid rgba(240,240,250,.5);
+    }
+    .hero-copy p {
+      max-width: 430px;
+      color: rgba(240,240,250,.82);
+      font-size: clamp(15px, 1.2vw, 18px);
+      line-height: 1.5;
+    }
+    .primary-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 34px;
+      min-width: 250px;
+      margin-top: 27px;
+      padding: 16px 0 13px;
+      border-bottom: 2px solid var(--white);
+      font: 700 12px/1 var(--mono);
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    .primary-link span { color: var(--flame); font-size: 19px; transition: transform .25s ease; }
+    .primary-link:hover span { transform: translateX(7px); }
+    .hero-caption {
+      position: absolute;
+      z-index: 3;
+      left: var(--pad);
+      top: 118px;
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      color: rgba(240,240,250,.65);
+      font: 500 9px/1 var(--mono);
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+
+    .section { position: relative; scroll-margin-top: 0; }
+    .section-shell { padding: clamp(82px, 10vw, 152px) var(--pad); }
+    .section-kicker {
+      margin-bottom: 36px;
+      color: var(--muted);
+      font: 700 11px/1 var(--mono);
+      letter-spacing: .15em;
+      text-transform: uppercase;
+    }
+    .section-kicker b { color: var(--flame); font-weight: 700; }
+    .display-title {
+      font: 700 clamp(52px, 8.2vw, 126px)/.84 var(--display);
+      letter-spacing: -.064em;
+      text-transform: uppercase;
+    }
+
+    .imperative { background: var(--paper); color: var(--ink); }
+    .imperative-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.36fr) minmax(290px, .64fr);
+      gap: clamp(50px, 9vw, 150px);
+      align-items: end;
+    }
+    .imperative .display-title { max-width: 900px; }
+    .statement {
+      padding-top: 24px;
+      border-top: 1px solid var(--line-light);
+    }
+    .statement .lead { font-size: clamp(20px, 2vw, 28px); line-height: 1.18; letter-spacing: -.025em; }
+    .statement p + p { margin-top: 24px; }
+    .statement .small { color: #4f5355; font-size: 15px; line-height: 1.6; }
+    .truth-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      margin-top: clamp(72px, 9vw, 132px);
+      border-top: 1px solid var(--line-light);
+      border-bottom: 1px solid var(--line-light);
+    }
+    .truth-strip article { min-height: 178px; padding: 24px 30px 28px 0; }
+    .truth-strip article + article { padding-left: 30px; border-left: 1px solid var(--line-light); }
+    .truth-strip .num { display: block; margin-bottom: 52px; color: var(--flame); font: 700 10px/1 var(--mono); }
+    .truth-strip h3 { font: 700 22px/1.05 var(--display); letter-spacing: -.03em; text-transform: uppercase; }
+    .truth-strip p { margin-top: 9px; color: #4f5355; font-size: 14px; }
+
+    .architecture { background: var(--black); }
+    .architecture-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(300px, .46fr);
+      gap: 80px;
+      align-items: end;
+      margin-bottom: 70px;
+    }
+    .architecture-head .display-title { max-width: 950px; }
+    .architecture-head p { color: var(--muted); font-size: 16px; line-height: 1.6; }
+    .axis-list { border-top: 1px solid var(--line-dark); }
+    .axis-row {
+      display: grid;
+      grid-template-columns: 90px minmax(210px, .48fr) minmax(0, 1fr) auto;
+      gap: 28px;
+      align-items: center;
+      min-height: 136px;
+      padding: 24px 0;
+      border-bottom: 1px solid var(--line-dark);
+    }
+    .axis-index { color: var(--flame); font: 700 11px/1 var(--mono); }
+    .axis-row h3 { font: 700 clamp(32px, 4vw, 60px)/.9 var(--display); letter-spacing: -.045em; text-transform: uppercase; }
+    .axis-row p { max-width: 620px; color: var(--muted); font-size: 15px; }
+    .axis-products { font: 700 11px/1.6 var(--mono); letter-spacing: .1em; text-align: right; text-transform: uppercase; }
+    .status { display: inline-block; margin-top: 5px; padding: 5px 7px; border: 1px solid var(--flame); color: var(--flame); }
+
+    .evidence {
+      min-height: 920px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.5fr) minmax(320px, .5fr);
+      background: #151515;
+    }
+    .evidence-image { position: relative; min-height: 720px; overflow: hidden; }
+    .evidence-image img { height: 100%; object-fit: cover; object-position: 52% center; }
+    .evidence-image::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, transparent 55%, rgba(0,0,0,.38)); }
+    .evidence-copy {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: clamp(54px, 6vw, 92px) var(--pad) 54px clamp(36px, 5vw, 76px);
+    }
+    .evidence-copy h2 { font: 700 clamp(48px, 5.7vw, 88px)/.86 var(--display); letter-spacing: -.055em; text-transform: uppercase; }
+    .evidence-copy .lead { margin-top: 30px; color: rgba(240,240,250,.74); font-size: 16px; line-height: 1.6; }
+    .evidence-proof { padding-top: 22px; border-top: 1px solid var(--line-dark); }
+    .evidence-proof b { display: block; margin-bottom: 11px; color: var(--flame); font: 700 11px/1 var(--mono); letter-spacing: .12em; }
+    .evidence-proof p { font-size: 14px; }
+
+    .pathway { background: var(--paper); color: var(--ink); }
+    .pathway-head {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 30px;
+      align-items: end;
+      margin-bottom: 70px;
+    }
+    .pathway-head .display-title { max-width: 940px; }
+    .pathway-head p { max-width: 300px; color: #515557; font-size: 15px; }
+    .path-grid {
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: 2px;
+      background: #222;
+      border: 1px solid #222;
+    }
+    .path-card {
+      position: relative;
+      min-height: 470px;
+      grid-column: span 4;
+      isolation: isolate;
+      overflow: hidden;
+      background: #111;
+      color: var(--white);
+    }
+    .path-card:first-child { grid-column: span 8; }
+    .path-card:nth-child(4), .path-card:nth-child(5), .path-card:nth-child(6) { min-height: 360px; }
+    .path-card img { position: absolute; z-index: -2; inset: 0; height: 100%; object-fit: cover; transition: transform .7s cubic-bezier(.2,.7,.2,1); }
+    .path-card::after { content: ""; position: absolute; z-index: -1; inset: 0; background: linear-gradient(0deg, rgba(0,0,0,.9), transparent 68%); }
+    .path-card:hover img { transform: scale(1.035); }
+    .path-card-content { position: absolute; inset: auto 28px 26px; }
+    .path-card .label { color: rgba(240,240,250,.68); font: 700 10px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; }
+    .path-card h3 { margin-top: 8px; font: 700 clamp(28px, 3.4vw, 54px)/.9 var(--display); letter-spacing: -.045em; text-transform: uppercase; }
+    .path-card p { max-width: 560px; margin-top: 12px; color: rgba(240,240,250,.74); font-size: 14px; }
+    .path-card .status { margin-top: 12px; font: 700 10px/1 var(--mono); letter-spacing: .1em; }
+
+    .action { background: var(--white); color: var(--ink); }
+    .action-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(340px, .53fr);
+      gap: clamp(60px, 10vw, 150px);
+      align-items: end;
+    }
+    .action .display-title { max-width: 850px; }
+    .action p { max-width: 620px; margin-top: 30px; color: #53575a; font-size: 17px; }
+    .action-links { border-top: 1px solid var(--line-light); }
+    .action-links a {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      min-height: 76px;
+      border-bottom: 1px solid var(--line-light);
+      font: 700 16px/1 var(--display);
+      letter-spacing: .025em;
+      text-transform: uppercase;
+    }
+    .action-links a span { color: var(--flame); font-size: 22px; transition: transform .25s ease; }
+    .action-links a:hover span { transform: translateX(8px); }
+
+    .site-footer {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 50px;
+      align-items: end;
+      margin-top: 112px;
+      padding-top: 30px;
+      border-top: 1px solid var(--line-light);
+    }
+    .footer-logo { width: 147px; margin-bottom: 24px; }
+    .disclaimer { font: 700 12px/1.45 var(--mono); letter-spacing: .11em; text-transform: uppercase; }
+    .legal { max-width: 620px; margin-top: 12px !important; font-size: 12px !important; line-height: 1.5; }
+    .footer-meta { font: 700 10px/1.6 var(--mono); letter-spacing: .09em; text-align: right; text-transform: uppercase; }
+
+    @media (max-width: 1180px) {
+      .site-header { grid-template-columns: 160px 1fr auto; }
+      .desktop-nav { gap: 14px; font-size: 9px; }
+      .header-meta { display: none; }
+      .hero-content { grid-template-columns: 1fr minmax(280px, .45fr); }
+      .axis-row { grid-template-columns: 60px minmax(180px, .44fr) 1fr; }
+      .axis-products { grid-column: 3; text-align: left; }
+      .evidence { grid-template-columns: 1.25fr .75fr; }
+    }
+
+    @media (max-width: 900px) {
+      .site-header { position: absolute; height: 78px; grid-template-columns: 1fr auto; }
+      .brand { width: 136px; }
+      .desktop-nav, .header-meta { display: none; }
+      .menu-button { display: block; }
+      .chapter-rail { display: none; }
+      .hero { min-height: 760px; }
+      .hero-media { background-position: 40% 50%; }
+      .hero-content { grid-template-columns: 1fr; gap: 26px; inset-bottom: 30px; }
+      .hero-copy { max-width: 520px; }
+      .hero-caption { top: 98px; }
+      .imperative-grid, .architecture-head, .pathway-head, .action-layout { grid-template-columns: 1fr; gap: 48px; }
+      .truth-strip { grid-template-columns: 1fr; }
+      .truth-strip article { min-height: auto; padding: 28px 0; }
+      .truth-strip article + article { padding-left: 0; border-left: 0; border-top: 1px solid var(--line-light); }
+      .truth-strip .num { margin-bottom: 22px; }
+      .axis-row { grid-template-columns: 42px 1fr; gap: 16px; }
+      .axis-row p, .axis-products { grid-column: 2; }
+      .evidence { min-height: 0; grid-template-columns: 1fr; }
+      .evidence-image { min-height: 640px; }
+      .evidence-copy { min-height: 580px; }
+      .path-card, .path-card:first-child { grid-column: span 6; min-height: 430px; }
+      .site-footer { grid-template-columns: 1fr; }
+      .footer-meta { text-align: left; }
+    }
+
+    @media (max-width: 560px) {
+      :root { --pad: 20px; }
+      .hero { min-height: 844px; height: 100svh; max-height: none; }
+      .hero-media { background-position: 44% 50%; }
+      .hero-shade { background: linear-gradient(0deg, rgba(0,0,0,.97) 0%, rgba(0,0,0,.18) 72%), linear-gradient(180deg, rgba(0,0,0,.5), transparent 30%); }
+      .hero-caption { display: none; }
+      .hero-content { inset: auto var(--pad) 24px; gap: 19px; }
+      .hero h1 { font-size: clamp(42px, 11vw, 64px); }
+      .hero-copy { padding-top: 16px; }
+      .hero-copy p { font-size: 15px; }
+      .primary-link { min-width: 0; width: 100%; margin-top: 18px; }
+      .section-shell { padding: 78px var(--pad); }
+      .section-kicker { margin-bottom: 24px; }
+      .display-title { font-size: clamp(48px, 16vw, 76px); }
+      .architecture-head { margin-bottom: 46px; }
+      .axis-row { min-height: 0; padding: 28px 0; }
+      .axis-row h3 { font-size: 38px; }
+      .evidence-image { min-height: 440px; }
+      .evidence-copy { min-height: 540px; padding: 62px var(--pad) 38px; }
+      .pathway-head { margin-bottom: 42px; }
+      .path-grid { display: block; border: 0; background: transparent; }
+      .path-card, .path-card:first-child, .path-card:nth-child(4), .path-card:nth-child(5), .path-card:nth-child(6) { min-height: 430px; margin-bottom: 2px; }
+      .path-card-content { inset: auto 20px 22px; }
+      .site-footer { margin-top: 80px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip navigation</a>
+
+  <header class="site-header">
+    <a class="brand" href="#mission" aria-label="SpaceX concept home">
+      <img src="../assets/spacex-brand/spacex-logo-light.svg" alt="SpaceX">
+    </a>
+    <nav class="desktop-nav" aria-label="Primary navigation">
+      <a href="#pathway">Vehicles</a>
+      <a href="#pathway">Human Spaceflight</a>
+      <a href="#architecture">Starlink</a>
+      <a href="#architecture">Starshield</a>
+      <a href="#architecture">SpaceXAI</a>
+      <a href="#action">Company</a>
+      <a href="#action">Careers</a>
+      <a href="#action">Investors</a>
+    </nav>
+    <div class="header-meta">Unofficial concept<br>2026 / Direction 02</div>
+    <button class="menu-button" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu"><span></span></button>
+  </header>
+
+  <nav class="mobile-menu" id="mobile-menu" aria-label="Mobile navigation" aria-hidden="true">
+    <a href="#pathway">Vehicles</a>
+    <a href="#pathway">Human Spaceflight</a>
+    <a href="#architecture">Starlink</a>
+    <a href="#architecture">Starshield</a>
+    <a href="#architecture">SpaceXAI</a>
+    <a href="#action">Company</a>
+    <a href="#action">Careers</a>
+    <a href="#action">Investors</a>
+  </nav>
+
+  <nav class="chapter-rail" aria-label="Mission chapters">
+    <a href="#mission" class="active" aria-label="Mission">01</a>
+    <a href="#imperative" aria-label="Imperative">02</a>
+    <a href="#architecture" aria-label="Architecture">03</a>
+    <a href="#evidence" aria-label="Evidence">04</a>
+    <a href="#action" aria-label="Action">05</a>
+  </nav>
+
+  <main id="main">
+    <section class="hero section" id="mission" data-chapter="01" aria-labelledby="hero-title">
+      <div class="hero-media" role="img" aria-label="Starship at the launch site viewed from above"></div>
+      <div class="hero-shade"></div>
+      <div class="hero-grain"></div>
+      <div class="hero-caption">Starship / official SpaceX imagery / non-commercial concept use</div>
+      <div class="hero-content">
+        <div>
+          <div class="eyebrow">01 / The mission</div>
+          <h1 id="hero-title">Making life<br>multiplanetary</h1>
+        </div>
+        <div class="hero-copy">
+          <p>Build the transport, connectivity and computing systems that can extend human capability beyond Earth.</p>
+          <a class="primary-link" href="#imperative">Enter the mission <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+    </section>
+
+    <section class="imperative section" id="imperative" data-chapter="02" aria-labelledby="imperative-title">
+      <div class="section-shell">
+        <div class="section-kicker"><b>02</b> / The imperative</div>
+        <div class="imperative-grid">
+          <h2 class="display-title" id="imperative-title">One planet.<br>No redundancy.</h2>
+          <div class="statement">
+            <p class="lead">Making life multiplanetary is not a countdown. It is a long-term engineering mission.</p>
+            <p class="small">The path separates what works today, what is being developed now, and what remains a destination beyond the horizon. Vision becomes credible only when each step can be tested.</p>
+          </div>
+        </div>
+        <div class="truth-strip" aria-label="Mission principles">
+          <article><span class="num">01 / TODAY</span><h3>Prove capability</h3><p>Falcon and Dragon make present-day performance visible.</p></article>
+          <article><span class="num">02 / NEXT</span><h3>Design for reuse</h3><p>Starship is designed for full and rapid reusability.</p></article>
+          <article><span class="num">03 / BEYOND</span><h3>Expand the system</h3><p>Connectivity and orbital compute extend the mission architecture.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="architecture section" id="architecture" data-chapter="03" aria-labelledby="architecture-title">
+      <div class="section-shell">
+        <div class="section-kicker"><b>03</b> / The engineering path</div>
+        <div class="architecture-head">
+          <h2 class="display-title" id="architecture-title">Three systems.<br>One mission.</h2>
+          <p>The mission is not a single vehicle. It is a connected stack: movement through space, resilient connectivity, and computing designed to operate in orbit.</p>
+        </div>
+        <div class="axis-list">
+          <article class="axis-row">
+            <div class="axis-index">01</div><h3>Space</h3>
+            <p>Transportation systems for payloads, cargo and people—from operational launch capability to the development of a fully reusable system.</p>
+            <div class="axis-products">Starship<br>Falcon<br>Dragon</div>
+          </article>
+          <article class="axis-row">
+            <div class="axis-index">02</div><h3>Connectivity</h3>
+            <p>Low-Earth-orbit broadband through Starlink, with Starshield focused on government use cases including secure communications.</p>
+            <div class="axis-products">Starlink<br>Starshield</div>
+          </article>
+          <article class="axis-row">
+            <div class="axis-index">03</div><h3>AI</h3>
+            <p>STARMIND is described as an orbital AI computing system. Its status must remain explicit.</p>
+            <div class="axis-products">Starmind<br><span class="status">In development</span></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="evidence section" id="evidence" data-chapter="04" aria-labelledby="evidence-title">
+      <div class="evidence-image">
+        <img src="../assets/spacex-brand/hero-secondary-catch.jpg" alt="Super Heavy booster descending toward the launch tower at Starbase">
+      </div>
+      <div class="evidence-copy">
+        <div>
+          <div class="section-kicker"><b>04</b> / Engineering evidence</div>
+          <h2 id="evidence-title">Reuse is<br>a system.</h2>
+          <p class="lead">The ambition is not simply to fly. It is to recover, inspect, learn and fly again—turning each test into the next engineering input.</p>
+        </div>
+        <div class="evidence-proof">
+          <b>DESIGN INTENT / NOT A COMPLETION CLAIM</b>
+          <p>Starship is designed to be fully and rapidly reusable. This concept deliberately distinguishes that goal from present operational status.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="pathway section" id="pathway" data-chapter="04" aria-labelledby="pathway-title">
+      <div class="section-shell">
+        <div class="section-kicker"><b>04.2</b> / Follow the pathway</div>
+        <div class="pathway-head">
+          <h2 class="display-title" id="pathway-title">From capability<br>to destination.</h2>
+          <p>Explore the systems in the order the mission needs them: transport, people, connectivity, compute, then the long horizon.</p>
+        </div>
+        <div class="path-grid">
+          <a class="path-card" href="#action">
+            <img src="../assets/spacex-brand/candidates/01-starship-hero.jpg" alt="Starship at its launch site">
+            <div class="path-card-content"><div class="label">01 / Reusable transport system</div><h3>Starship</h3><p>Designed for full and rapid reusability.</p></div>
+          </a>
+          <a class="path-card" href="#action">
+            <img src="../assets/spacex-brand/candidates/08-falcon9-feature.jpg" alt="Falcon 9 landing at night">
+            <div class="path-card-content"><div class="label">02 / Operational launch capability</div><h3>Falcon</h3></div>
+          </a>
+          <a class="path-card" href="#action">
+            <img src="../assets/spacex-brand/candidates/13-dragon-humans.jpg" alt="Astronauts associated with a Dragon mission">
+            <div class="path-card-content"><div class="label">03 / Human spaceflight</div><h3>Dragon</h3><p>People and cargo to Earth orbit.</p></div>
+          </a>
+          <a class="path-card" href="#action">
+            <img src="../assets/spacex-brand/candidates/11-falcon9-lighttrail.jpg" alt="Falcon 9 ascending through the sky">
+            <div class="path-card-content"><div class="label">04 / Connectivity</div><h3>Starlink</h3></div>
+          </a>
+          <a class="path-card" href="#action">
+            <img src="../assets/spacex-brand/candidates/14-dragon-earth.jpg" alt="Spacecraft silhouetted above Earth's horizon">
+            <div class="path-card-content"><div class="label">05 / Orbital compute</div><h3>Starmind</h3><span class="status">In development</span></div>
+          </a>
+          <a class="path-card" href="#action">
+            <img src="../assets/spacex-brand/candidates/03-starship-mars.jpg" alt="Concept image of Starship on Mars">
+            <div class="path-card-content"><div class="label">06 / Long-term horizon</div><h3>Mars &amp; beyond</h3><p>A destination, not a countdown.</p></div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="action section" id="action" data-chapter="05" aria-labelledby="action-title">
+      <div class="section-shell">
+        <div class="section-kicker"><b>05</b> / Take the next step</div>
+        <div class="action-layout">
+          <div>
+            <h2 class="display-title" id="action-title">The mission needs<br>more than belief.</h2>
+            <p>Follow operational activity, explore the engineering, build the systems, or understand the company behind the work.</p>
+          </div>
+          <nav class="action-links" aria-label="Company actions">
+            <a href="#mission">View launches <span aria-hidden="true">→</span></a>
+            <a href="#pathway">Explore systems <span aria-hidden="true">→</span></a>
+            <a href="#action">Careers <span aria-hidden="true">→</span></a>
+            <a href="#action">Investors <span aria-hidden="true">→</span></a>
+          </nav>
+        </div>
+
+        <footer class="site-footer">
+          <div>
+            <img class="footer-logo" src="../assets/spacex-brand/spacex-logo-dark.svg" alt="SpaceX">
+            <div class="disclaimer">Unofficial concept / Not affiliated with SpaceX</div>
+            <p class="legal">Design exploration for non-commercial concept use. SpaceX names, marks and official imagery remain the property of their respective owners. Public or commercial release requires independent rights review.</p>
+          </div>
+          <div class="footer-meta">Direction 02<br>Mission architecture<br>Reality benchmark: The Ocean Cleanup</div>
+        </footer>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const menuButton = document.querySelector('.menu-button');
+    const mobileMenu = document.querySelector('.mobile-menu');
+    const mobileLinks = mobileMenu.querySelectorAll('a');
+
+    function setMenu(open) {
+      menuButton.setAttribute('aria-expanded', String(open));
+      menuButton.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+      mobileMenu.setAttribute('aria-hidden', String(!open));
+      document.body.classList.toggle('menu-open', open);
+    }
+    menuButton.addEventListener('click', () => setMenu(menuButton.getAttribute('aria-expanded') !== 'true'));
+    mobileLinks.forEach(link => link.addEventListener('click', () => setMenu(false)));
+    document.addEventListener('keydown', event => { if (event.key === 'Escape') setMenu(false); });
+
+    const chapters = [...document.querySelectorAll('[data-chapter]')];
+    const railLinks = [...document.querySelectorAll('.chapter-rail a')];
+    const observer = new IntersectionObserver(entries => {
+      const visible = entries.filter(entry => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+      if (!visible) return;
+      const chapter = visible.target.dataset.chapter;
+      railLinks.forEach(link => link.classList.toggle('active', link.textContent.trim() === chapter));
+    }, { rootMargin: '-35% 0px -45% 0px', threshold: [0, .25, .5, .75] });
+    chapters.forEach(chapter => observer.observe(chapter));
+  </script>
+</body>
+</html>

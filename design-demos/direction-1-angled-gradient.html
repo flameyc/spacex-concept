@@ -1,0 +1,620 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="Unofficial SpaceX concept exploring a trajectory-driven, angled fluid visual system.">
+  <title>SpaceX Concept — Angled Trajectory</title>
+  <!--
+    方向一｜逻辑一·秒数轮盘：Angled Fluid Gradient
+    假设：把 Stripe 式斜切渐变从“数字色带”转译为真实尾焰、烟羽与轨迹。
+    色彩：仅使用品牌黑白、影像钢灰，以及从 Starship 主图尾焰提取的橙色。
+    结构：首屏是斜切海报；正文用理性栅格证明愿景、能力与研发状态的差异。
+  -->
+  <style>
+    :root {
+      --black: #000;
+      --ink: #111;
+      --white: #f0f0fa;
+      --paper: #f4f4f1;
+      --muted: #a6a7ab;
+      --steel: #8e999f;
+      --flame: #f36b21;
+      --line-dark: rgba(240, 240, 250, .24);
+      --line-light: rgba(17, 17, 17, .2);
+      --gutter: clamp(22px, 5.55vw, 80px);
+      --display: "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+      --body: Arial, "Helvetica Neue", sans-serif;
+      --mono: "IBM Plex Mono", Consolas, "Courier New", monospace;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; overflow-x: hidden; }
+    body {
+      margin: 0;
+      min-width: 320px;
+      overflow-x: hidden;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: var(--body);
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+    button, summary { font: inherit; }
+
+    .eyebrow {
+      margin: 0;
+      font: 700 12px/1.2 var(--mono);
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+
+    .site-header {
+      position: absolute;
+      z-index: 20;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 94px;
+      display: grid;
+      grid-template-columns: 180px 1fr auto;
+      align-items: center;
+      gap: 30px;
+      padding: 0 var(--gutter);
+      color: var(--white);
+      border-bottom: 1px solid var(--line-dark);
+    }
+    .brand-logo { width: 147px; height: auto; }
+    .primary-nav {
+      justify-self: center;
+      display: flex;
+      align-items: center;
+      gap: clamp(18px, 2.3vw, 36px);
+      font: 700 11px/1 var(--body);
+      letter-spacing: .095em;
+      text-transform: uppercase;
+    }
+    .primary-nav a,
+    .utility-link { position: relative; padding: 12px 0; white-space: nowrap; }
+    .primary-nav a::after,
+    .utility-link::after {
+      content: "";
+      position: absolute;
+      right: 0;
+      bottom: 4px;
+      left: 0;
+      height: 1px;
+      background: currentColor;
+      transform: scaleX(0);
+      transform-origin: right;
+      transition: transform .24s ease;
+    }
+    .primary-nav a:hover::after,
+    .primary-nav a:focus-visible::after,
+    .utility-link:hover::after,
+    .utility-link:focus-visible::after { transform: scaleX(1); transform-origin: left; }
+    .utility-link { font: 700 11px/1 var(--mono); letter-spacing: .12em; }
+    .mobile-menu { display: none; }
+
+    .hero {
+      position: relative;
+      min-height: 900px;
+      color: var(--white);
+      background: var(--black);
+      isolation: isolate;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: "";
+      position: absolute;
+      z-index: 1;
+      inset: 0;
+      pointer-events: none;
+      opacity: .26;
+      background-image:
+        linear-gradient(90deg, transparent calc(25% - .5px), rgba(240,240,250,.17) 25%, transparent calc(25% + .5px)),
+        linear-gradient(90deg, transparent calc(50% - .5px), rgba(240,240,250,.11) 50%, transparent calc(50% + .5px)),
+        linear-gradient(90deg, transparent calc(75% - .5px), rgba(240,240,250,.11) 75%, transparent calc(75% + .5px));
+    }
+    .hero-media {
+      position: absolute;
+      z-index: 0;
+      inset: 0 0 0 30%;
+      overflow: hidden;
+      clip-path: polygon(26% 0, 100% 0, 100% 100%, 0 100%);
+      background: #090b0c;
+    }
+    .hero-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: 47% center;
+      filter: saturate(.92) contrast(1.05);
+      transform: scale(1.025);
+    }
+    .hero-media::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, rgba(0,0,0,.84) 0%, rgba(0,0,0,.08) 36%, rgba(0,0,0,.02) 72%, rgba(0,0,0,.38) 100%),
+        linear-gradient(0deg, rgba(0,0,0,.64) 0%, transparent 42%);
+    }
+    .hero-angle {
+      position: absolute;
+      z-index: 2;
+      inset: 0 auto 0 calc(30% - 1px);
+      width: 19vw;
+      min-width: 240px;
+      pointer-events: none;
+      clip-path: polygon(100% 0, 100% 100%, 0 100%);
+      background: linear-gradient(146deg, rgba(0,0,0,0) 0 47%, rgba(240,240,250,.1) 47.2%, rgba(0,0,0,.86) 47.5% 100%);
+    }
+    .plume {
+      position: absolute;
+      z-index: 3;
+      left: -11%;
+      bottom: 112px;
+      width: 98%;
+      height: 200px;
+      transform: rotate(-7.5deg);
+      transform-origin: left center;
+      pointer-events: none;
+      clip-path: polygon(0 52%, 39% 22%, 100% 39%, 100% 65%, 38% 73%, 0 64%);
+      opacity: .8;
+      mix-blend-mode: screen;
+      background:
+        radial-gradient(ellipse at 38% 50%, rgba(255,255,255,.9) 0 4%, rgba(255,255,255,.25) 13%, transparent 31%),
+        linear-gradient(90deg, transparent 2%, rgba(243,107,33,.95) 24%, rgba(255,240,218,.92) 42%, rgba(142,153,159,.52) 64%, transparent 94%);
+      filter: blur(11px);
+    }
+    .plume-line {
+      position: absolute;
+      z-index: 4;
+      left: -2%;
+      bottom: 220px;
+      width: 87%;
+      height: 1px;
+      transform: rotate(-7.5deg);
+      transform-origin: left center;
+      background: linear-gradient(90deg, transparent, var(--flame) 23%, var(--white) 51%, rgba(240,240,250,.08));
+      box-shadow: 0 0 16px rgba(243,107,33,.72);
+    }
+    .plume-line::after {
+      content: "";
+      position: absolute;
+      right: -5px;
+      top: -4px;
+      width: 9px;
+      height: 9px;
+      border: 1px solid var(--white);
+      border-radius: 50%;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 6;
+      width: min(700px, 58vw);
+      padding: 178px 0 0 var(--gutter);
+    }
+    .hero-kicker { display: flex; align-items: center; gap: 14px; color: #d0d2d4; }
+    .hero-kicker::before { content: ""; width: 42px; height: 1px; background: var(--flame); }
+    .hero h1 {
+      margin: 28px 0 24px;
+      max-width: 680px;
+      font: 800 clamp(76px, 8.6vw, 126px)/.79 var(--display);
+      letter-spacing: -.07em;
+      text-transform: uppercase;
+      text-wrap: balance;
+    }
+    .hero h1 span { display: block; }
+    .hero h1 .line-2 { color: transparent; -webkit-text-stroke: 1px rgba(240,240,250,.82); }
+    .hero-copy {
+      max-width: 390px;
+      margin: 0 0 34px;
+      color: #d6d7d9;
+      font-size: 15px;
+      line-height: 1.55;
+      text-wrap: pretty;
+    }
+    .cta {
+      display: inline-flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 240px;
+      min-height: 52px;
+      padding: 0 18px;
+      border: 1px solid rgba(240,240,250,.72);
+      font: 700 11px/1 var(--mono);
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      transition: color .2s ease, background .2s ease;
+    }
+    .cta span { font-size: 18px; line-height: 0; }
+    .cta:hover, .cta:focus-visible { color: var(--black); background: var(--white); outline: 0; }
+
+    .axis-bar {
+      position: absolute;
+      z-index: 7;
+      right: var(--gutter);
+      bottom: 36px;
+      left: var(--gutter);
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr auto;
+      border-top: 1px solid var(--line-dark);
+      border-bottom: 1px solid var(--line-dark);
+      background: rgba(0,0,0,.54);
+      backdrop-filter: blur(8px);
+    }
+    .axis-item {
+      min-height: 88px;
+      display: grid;
+      align-content: center;
+      padding: 0 22px;
+      border-right: 1px solid var(--line-dark);
+    }
+    .axis-item span:first-child { margin-bottom: 8px; color: var(--steel); font: 700 10px/1 var(--mono); letter-spacing: .14em; }
+    .axis-item strong { font: 700 clamp(16px,1.45vw,21px)/1 var(--display); letter-spacing: .04em; }
+    .axis-note { min-width: 220px; display: grid; align-content: center; padding: 0 22px; color: #c3c4c8; font: 700 10px/1.45 var(--mono); letter-spacing: .1em; }
+    .axis-note em { color: var(--flame); font-style: normal; }
+
+    .manifesto {
+      position: relative;
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(360px, .8fr);
+      min-height: 720px;
+      background: var(--paper);
+      border-bottom: 1px solid var(--line-light);
+      overflow: hidden;
+    }
+    .manifesto-copy { padding: 116px var(--gutter) 100px; }
+    .section-index { color: #6d7477; }
+    .manifesto h2,
+    .mission-paths h2,
+    .proof-copy h2 {
+      margin: 26px 0 34px;
+      font: 800 clamp(54px, 6.7vw, 102px)/.88 var(--display);
+      letter-spacing: -.055em;
+      text-transform: uppercase;
+      text-wrap: balance;
+    }
+    .manifesto p:not(.eyebrow) { max-width: 620px; margin: 0; font-size: clamp(18px, 1.8vw, 27px); line-height: 1.34; text-wrap: pretty; }
+    .manifesto-rule {
+      position: relative;
+      min-height: 520px;
+      border-left: 1px solid var(--line-light);
+      background:
+        linear-gradient(139deg, transparent 0 34%, rgba(142,153,159,.55) 34.1% 34.3%, transparent 34.4%),
+        linear-gradient(139deg, transparent 0 51%, rgba(243,107,33,.9) 51.1% 53%, transparent 53.1%),
+        linear-gradient(139deg, transparent 0 68%, rgba(17,17,17,.85) 68.1% 88%, transparent 88.1%);
+    }
+    .manifesto-rule::before {
+      content: "TODAY / DEVELOPMENT / LONG HORIZON";
+      position: absolute;
+      right: 30px;
+      bottom: 34px;
+      color: #3f4446;
+      font: 700 11px/1 var(--mono);
+      letter-spacing: .12em;
+      writing-mode: vertical-rl;
+    }
+    .status-cluster { margin-top: 58px; border-top: 1px solid var(--line-light); }
+    .status-row {
+      display: grid;
+      grid-template-columns: 150px 1fr auto;
+      align-items: center;
+      gap: 24px;
+      min-height: 66px;
+      border-bottom: 1px solid var(--line-light);
+      font-size: 14px;
+    }
+    .status-row strong { font: 700 12px/1 var(--mono); letter-spacing: .1em; }
+    .status-row span { color: #4d5153; line-height: 1.35; }
+    .status-row em { color: #596064; font: 700 10px/1 var(--mono); font-style: normal; letter-spacing: .1em; white-space: nowrap; }
+    .status-row em.dev { color: #9e4317; }
+
+    .proof {
+      display: grid;
+      grid-template-columns: minmax(0, 1.22fr) minmax(380px, .78fr);
+      min-height: 760px;
+      color: var(--white);
+      background: #080808;
+    }
+    .proof-media { position: relative; min-height: 650px; overflow: hidden; clip-path: polygon(0 0, 100% 0, 84% 100%, 0 100%); }
+    .proof-media img { width: 100%; height: 100%; object-fit: cover; object-position: 51% center; filter: saturate(.8) contrast(1.05); }
+    .proof-media::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, transparent 58%, #080808 100%); }
+    .proof-label { position: absolute; z-index: 2; left: var(--gutter); bottom: 36px; max-width: 360px; color: #dedfe2; }
+    .proof-label p:last-child { margin: 12px 0 0; font-size: 14px; line-height: 1.5; }
+    .proof-copy { display: flex; flex-direction: column; justify-content: center; padding: 90px var(--gutter) 90px 18px; }
+    .proof-copy h2 { font-size: clamp(50px, 5.5vw, 84px); }
+    .proof-copy > p:not(.eyebrow) { margin: 0; max-width: 470px; color: #c2c4c7; font-size: 16px; line-height: 1.6; }
+    .proof-list { margin-top: 42px; border-top: 1px solid var(--line-dark); }
+    .proof-list div { display: grid; grid-template-columns: 74px 1fr; gap: 16px; padding: 18px 0; border-bottom: 1px solid var(--line-dark); }
+    .proof-list span { color: var(--flame); font: 700 11px/1.4 var(--mono); letter-spacing: .1em; }
+    .proof-list strong { font: 700 13px/1.35 var(--mono); letter-spacing: .06em; }
+
+    .mission-paths { padding: 112px var(--gutter) 126px; background: var(--white); }
+    .paths-head { display: grid; grid-template-columns: 1fr minmax(260px, 420px); align-items: end; gap: 60px; margin-bottom: 64px; }
+    .mission-paths h2 { margin-bottom: 0; }
+    .paths-head > p { margin: 0 0 10px; color: #505456; font-size: 15px; line-height: 1.55; }
+    .path-grid { border-top: 1px solid var(--line-light); }
+    .path {
+      position: relative;
+      display: grid;
+      grid-template-columns: 74px minmax(170px, .5fr) 1fr 150px;
+      align-items: center;
+      gap: 24px;
+      min-height: 112px;
+      padding: 0 22px;
+      border-bottom: 1px solid var(--line-light);
+      overflow: hidden;
+      transition: color .25s ease;
+    }
+    .path::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      background: var(--path-image) center var(--path-position, 55%)/cover no-repeat;
+      opacity: 0;
+      transform: scale(1.025);
+      transition: opacity .3s ease, transform .5s ease;
+    }
+    .path::after { content: ""; position: absolute; inset: 0; z-index: 0; background: linear-gradient(90deg, rgba(0,0,0,.88), rgba(0,0,0,.28)); opacity: 0; transition: opacity .3s ease; }
+    .path > * { position: relative; z-index: 1; }
+    .path:hover, .path:focus-visible { color: var(--white); outline: 0; }
+    .path:hover::before, .path:focus-visible::before { opacity: .78; transform: scale(1); }
+    .path:hover::after, .path:focus-visible::after { opacity: 1; }
+    .path-index { font: 700 11px/1 var(--mono); letter-spacing: .12em; }
+    .path h3 { margin: 0; font: 800 clamp(25px, 2.4vw, 38px)/1 var(--display); letter-spacing: -.025em; text-transform: uppercase; }
+    .path p { margin: 0; font-size: 14px; line-height: 1.5; }
+    .path-status { justify-self: end; font: 700 10px/1.25 var(--mono); letter-spacing: .1em; text-align: right; text-transform: uppercase; }
+    .path-status.dev { color: #a8491b; }
+    .path:hover .path-status.dev, .path:focus-visible .path-status.dev { color: #ff9b66; }
+
+    .site-footer {
+      color: var(--white);
+      background: var(--black);
+      border-top: 1px solid var(--line-dark);
+    }
+    .footer-main { display: grid; grid-template-columns: 1fr 1.3fr; gap: 80px; padding: 82px var(--gutter) 64px; }
+    .footer-logo { width: 147px; margin-bottom: 28px; }
+    .footer-main h2 { margin: 0; max-width: 500px; font: 800 clamp(44px, 5vw, 76px)/.9 var(--display); letter-spacing: -.05em; text-transform: uppercase; }
+    .footer-links { display: grid; grid-template-columns: repeat(2, 1fr); border-top: 1px solid var(--line-dark); }
+    .footer-links a { display: flex; align-items: center; min-height: 58px; border-bottom: 1px solid var(--line-dark); font: 700 11px/1 var(--mono); letter-spacing: .1em; }
+    .footer-links a:nth-child(odd) { border-right: 1px solid var(--line-dark); }
+    .footer-links a:nth-child(even) { padding-left: 24px; }
+    .legal {
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 22px var(--gutter);
+      color: #b0b2b5;
+      border-top: 1px solid var(--line-dark);
+      font: 700 10px/1.5 var(--mono);
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+    .legal strong { color: var(--flame); }
+
+    @media (max-width: 1120px) {
+      .site-header { grid-template-columns: 160px 1fr auto; }
+      .primary-nav { gap: 16px; }
+      .primary-nav a:nth-last-child(-n+2) { display: none; }
+      .hero-content { width: 62vw; }
+      .axis-note { min-width: 175px; }
+      .proof { grid-template-columns: 1fr 420px; }
+    }
+
+    @media (max-width: 820px) {
+      .site-header { height: 76px; grid-template-columns: 1fr auto; padding: 0 22px; }
+      .brand-logo { width: 130px; }
+      .primary-nav, .utility-link { display: none; }
+      .mobile-menu { display: block; position: relative; }
+      .mobile-menu summary { list-style: none; cursor: pointer; font: 700 11px/1 var(--mono); letter-spacing: .12em; }
+      .mobile-menu summary::-webkit-details-marker { display: none; }
+      .mobile-panel {
+        position: absolute;
+        top: 38px;
+        right: 0;
+        width: min(310px, calc(100vw - 44px));
+        padding: 16px 20px;
+        border: 1px solid rgba(240,240,250,.5);
+        color: var(--white);
+        background: rgba(0,0,0,.96);
+      }
+      .mobile-panel a { display: block; padding: 12px 0; border-bottom: 1px solid var(--line-dark); font: 700 11px/1 var(--mono); letter-spacing: .1em; }
+      .hero { min-height: 844px; }
+      .hero::before { opacity: .16; }
+      .hero-media { inset: 0; height: 56%; clip-path: polygon(0 0, 100% 0, 100% 84%, 0 100%); }
+      .hero-media img { object-position: 59% center; }
+      .hero-media::after { background: linear-gradient(0deg, #000 0%, rgba(0,0,0,.12) 58%), linear-gradient(90deg, rgba(0,0,0,.3), transparent); }
+      .hero-angle { display: none; }
+      .plume { left: -30%; bottom: 306px; width: 150%; height: 145px; transform: rotate(-8deg); opacity: .66; }
+      .plume-line { left: -12%; bottom: 372px; width: 118%; }
+      .hero-content { width: auto; padding: 358px 22px 0; }
+      .hero h1 { margin-top: 20px; font-size: clamp(48px, 14.5vw, 68px); line-height: .82; }
+      .hero-copy { max-width: 340px; margin-bottom: 24px; font-size: 14px; }
+      .cta { width: 218px; min-height: 48px; }
+      .axis-bar { right: 22px; bottom: 18px; left: 22px; grid-template-columns: repeat(3, 1fr); }
+      .axis-item { min-height: 66px; padding: 0 10px; }
+      .axis-item strong { font-size: 13px; }
+      .axis-note { display: none; }
+      .manifesto { grid-template-columns: 1fr; min-height: auto; }
+      .manifesto-copy { padding: 78px 22px 70px; }
+      .manifesto-rule { display: none; }
+      .status-row { grid-template-columns: 110px 1fr; gap: 14px; padding: 14px 0; }
+      .status-row em { grid-column: 2; }
+      .proof { grid-template-columns: 1fr; }
+      .proof-media { min-height: 500px; clip-path: polygon(0 0, 100% 0, 100% 88%, 0 100%); }
+      .proof-media::after { background: linear-gradient(0deg, #080808, transparent 42%); }
+      .proof-copy { padding: 34px 22px 78px; }
+      .paths-head { grid-template-columns: 1fr; gap: 28px; }
+      .mission-paths { padding: 78px 22px 90px; }
+      .path { grid-template-columns: 42px 1fr auto; gap: 10px; padding: 18px 0; }
+      .path p { grid-column: 2 / 4; }
+      .path-status { max-width: 94px; }
+      .footer-main { grid-template-columns: 1fr; gap: 54px; padding: 72px 22px 54px; }
+      .legal { flex-direction: column; padding: 20px 22px; }
+    }
+
+    @media (max-width: 420px) {
+      .hero-content { padding-top: 342px; }
+      .hero h1 { font-size: 51px; }
+      .axis-item span:first-child { font-size: 9px; }
+      .axis-item strong { font-size: 11px; }
+      .manifesto h2, .mission-paths h2, .proof-copy h2 { font-size: 48px; }
+      .manifesto p:not(.eyebrow) { font-size: 18px; }
+      .path { grid-template-columns: 34px 1fr; }
+      .path-status { grid-column: 2; justify-self: start; text-align: left; }
+      .path p { grid-column: 2; }
+      .footer-links { grid-template-columns: 1fr; }
+      .footer-links a:nth-child(odd) { border-right: 0; }
+      .footer-links a:nth-child(even) { padding-left: 0; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <a href="#top" aria-label="SpaceX concept home">
+      <img class="brand-logo" src="../assets/spacex-brand/spacex-logo-light.svg" alt="SpaceX">
+    </a>
+    <nav class="primary-nav" aria-label="Primary navigation">
+      <a href="#vehicles">Vehicles</a>
+      <a href="#human-spaceflight">Human Spaceflight</a>
+      <a href="#connectivity">Starlink</a>
+      <a href="#company">Starshield</a>
+      <a href="#ai">SpaceXAI</a>
+      <a href="#company">Company</a>
+      <a href="#company">Careers</a>
+    </nav>
+    <a class="utility-link" href="#company">Investors ↗</a>
+    <details class="mobile-menu">
+      <summary>MENU +</summary>
+      <nav class="mobile-panel" aria-label="Mobile navigation">
+        <a href="#vehicles">Vehicles</a>
+        <a href="#human-spaceflight">Human Spaceflight</a>
+        <a href="#connectivity">Starlink</a>
+        <a href="#company">Starshield</a>
+        <a href="#ai">SpaceXAI</a>
+        <a href="#company">Company / Careers / Investors</a>
+      </nav>
+    </details>
+  </header>
+
+  <main id="top">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-media" aria-hidden="true">
+        <img src="../assets/spacex-brand/hero-primary-starship.jpg" alt="">
+      </div>
+      <div class="hero-angle" aria-hidden="true"></div>
+      <div class="plume" aria-hidden="true"></div>
+      <div class="plume-line" aria-hidden="true"></div>
+
+      <div class="hero-content">
+        <p class="eyebrow hero-kicker">From Earth / Outward</p>
+        <h1 id="hero-title"><span>Making life</span><span class="line-2">multiplanetary</span></h1>
+        <p class="hero-copy">Building the transport, connectivity and computing systems that extend human presence beyond Earth.</p>
+        <a class="cta" href="#vehicles">Enter the mission <span aria-hidden="true">↗</span></a>
+      </div>
+
+      <div class="axis-bar" aria-label="SpaceX business axes">
+        <div class="axis-item"><span>01 / PHYSICAL</span><strong>SPACE</strong></div>
+        <div class="axis-item"><span>02 / NETWORK</span><strong>CONNECTIVITY</strong></div>
+        <div class="axis-item"><span>03 / COMPUTE</span><strong>AI</strong></div>
+        <div class="axis-note"><em>UNOFFICIAL CONCEPT</em><br>NOT AFFILIATED WITH SPACEX</div>
+      </div>
+    </section>
+
+    <section class="manifesto" id="vehicles" aria-labelledby="systems-title">
+      <div class="manifesto-copy">
+        <p class="eyebrow section-index">01 / Systems, not spectacle</p>
+        <h2 id="systems-title">One trajectory.<br>Different states.</h2>
+        <p>The mission connects what flies today, what is being developed now, and what remains a long-horizon destination. Precision means keeping those states visible.</p>
+        <div class="status-cluster" aria-label="Capability status">
+          <div class="status-row"><strong>STARSHIP</strong><span>Designed for full and rapid reusability.</span><em>DESIGNED FOR</em></div>
+          <div class="status-row"><strong>FALCON 9</strong><span>Reusable, two-stage orbital-class rocket.</span><em>OPERATIONAL</em></div>
+          <div class="status-row" id="ai"><strong>STARMIND</strong><span>Orbital AI computing system.</span><em class="dev">IN DEVELOPMENT</em></div>
+          <div class="status-row"><strong>MARS</strong><span>A long-term destination for human presence.</span><em>LONG HORIZON</em></div>
+        </div>
+      </div>
+      <div class="manifesto-rule" aria-hidden="true"></div>
+    </section>
+
+    <section class="proof" id="human-spaceflight" aria-labelledby="reuse-title">
+      <div class="proof-media">
+        <img src="../assets/spacex-brand/hero-secondary-catch.jpg" alt="Super Heavy booster descending above the launch tower at Starbase">
+        <div class="proof-label">
+          <p class="eyebrow">Engineering evidence / Starbase</p>
+          <p>Reusability is not a graphic motif. It is a system constraint shaping vehicles, launch infrastructure and operations.</p>
+        </div>
+      </div>
+      <div class="proof-copy">
+        <p class="eyebrow section-index">02 / Reuse changes the path</p>
+        <h2 id="reuse-title">Return is part of flight.</h2>
+        <p>Starship pairs the ship with the Super Heavy booster as a transport system designed around full and rapid reuse. The destination is ambitious; the language stays exact.</p>
+        <div class="proof-list">
+          <div><span>SHIP</span><strong>STARSHIP SPACECRAFT</strong></div>
+          <div><span>BOOSTER</span><strong>SUPER HEAVY</strong></div>
+          <div><span>SYSTEM</span><strong>DESIGNED FOR FULL + RAPID REUSE</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="mission-paths" id="connectivity" aria-labelledby="paths-title">
+      <div class="paths-head">
+        <div>
+          <p class="eyebrow section-index">03 / Mission paths</p>
+          <h2 id="paths-title">Choose a vector.</h2>
+        </div>
+        <p>From launch and human spaceflight to global connectivity and orbital compute, each path advances the same mission at a different scale.</p>
+      </div>
+
+      <div class="path-grid">
+        <a class="path" href="#top" style="--path-image:url('../assets/spacex-brand/candidates/01-starship-hero.jpg'); --path-position:52%;">
+          <span class="path-index">01</span><h3>Starship</h3><p>A fully reusable transport architecture by design.</p><span class="path-status">DESIGNED FOR REUSE</span>
+        </a>
+        <a class="path" href="#top" style="--path-image:url('../assets/spacex-brand/candidates/08-falcon9-feature.jpg'); --path-position:60%;">
+          <span class="path-index">02</span><h3>Falcon</h3><p>Reusable orbital launch capability operating today.</p><span class="path-status">LAUNCH</span>
+        </a>
+        <a class="path" href="#top" style="--path-image:url('../assets/spacex-brand/candidates/13-dragon-humans.jpg'); --path-position:58%;">
+          <span class="path-index">03</span><h3>Dragon</h3><p>People and cargo to Earth orbit, with capacity for up to seven.</p><span class="path-status">HUMAN SPACEFLIGHT</span>
+        </a>
+        <a class="path" href="#top" style="--path-image:url('../assets/spacex-brand/candidates/14-dragon-earth.jpg'); --path-position:52%;">
+          <span class="path-index">04</span><h3>Starlink</h3><p>Broadband connectivity through a low-Earth-orbit constellation.</p><span class="path-status">CONNECTIVITY</span>
+        </a>
+        <a class="path" href="#top" style="--path-image:url('../assets/spacex-brand/candidates/05-starbase-factory.jpg'); --path-position:64%;">
+          <span class="path-index">05</span><h3>STARMIND</h3><p>An orbital AI computing system being developed by SpaceX.</p><span class="path-status dev">IN DEVELOPMENT</span>
+        </a>
+        <a class="path" href="#top" style="--path-image:url('../assets/spacex-brand/candidates/03-starship-mars.jpg'); --path-position:50%;">
+          <span class="path-index">06</span><h3>Mars &amp; Beyond</h3><p>The long-horizon destination behind the mission.</p><span class="path-status">LONG HORIZON</span>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer" id="company">
+    <div class="footer-main">
+      <div>
+        <img class="footer-logo" src="../assets/spacex-brand/spacex-logo-light.svg" alt="SpaceX">
+        <h2>Build the path outward.</h2>
+      </div>
+      <div class="footer-links" aria-label="Company links">
+        <a href="#top">Launches</a><a href="#top">Content</a>
+        <a href="#top">Careers</a><a href="#top">Company</a>
+        <a href="#top">Investors</a><a href="#top">Mission</a>
+      </div>
+    </div>
+    <div class="legal">
+      <span><strong>UNOFFICIAL CONCEPT / NOT AFFILIATED WITH SPACEX</strong></span>
+      <span>Non-commercial design exploration · Media and marks remain the property of their respective owners.</span>
+    </div>
+  </footer>
+</body>
+</html>
